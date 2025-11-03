@@ -4,14 +4,14 @@ Enterprise-grade secure web application with comprehensive security features inc
 
 ## Features
 
-- 🔐 Secure authentication with bcrypt password hashing
-- 🔑 Two-factor authentication (2FA) support
-- 👥 User management with role-based access control
-- 📊 Admin panel for user management
-- 🛡️ Rate limiting and security features
-- 📍 Geolocation-based login tracking
-- 🔒 Account locking mechanisms
-- 📝 Password history tracking
+- Secure authentication with bcrypt password hashing
+- Two-factor authentication (2FA) support
+- User management with role-based access control
+- Admin panel for user management
+- Rate limiting and security features
+- Geolocation-based login tracking
+- Account locking mechanisms
+- Password history tracking
 
 ## Prerequisites
 
