@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=secure_app
+      - DB_USER=secure_user
+      - DB_PASSWORD=secure_password_123!
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      - SESSION_SECRET=${SESSION_SECRET:-your-super-secret-session-key-change-in-production}
+      - ADMIN_EMAIL=admin@secureapp.com
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-Admin@123!Secure}
+      - LOGIN_RATE_LIMIT_MAX=50
+      - LOGIN_RATE_LIMIT_WINDOW_MS=900000
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - secure-network
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password_123!
+      - MYSQL_DATABASE=secure_app
+      - MYSQL_USER=secure_user
+      - MYSQL_PASSWORD=secure_password_123!
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - secure-network
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - secure-network
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  secure-network:
+    driver: bridge

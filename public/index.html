@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vineyard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .dashboard-container {
+            min-height: 100vh;
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        #dashboard .container {
+            max-width: none;
+            width: 100%;
+            padding: 0;
+            box-shadow: none;
+            border: none;
+            background: transparent;
+        }
+
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.75em;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a4a4a;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 15px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #333;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #333;
+        }
+
+        button:active {
+            background: #1a1a1a;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 8px;
+            transition: all 0.3s;
+        }
+
+        .strength-weak { background: #e53935; }
+        .strength-fair { background: #fb8c00; }
+        .strength-good { background: #fdd835; }
+        .strength-strong { background: #43a047; }
+
+        .error-message, .success-message {
+            padding: 12px 14px;
+            border-radius: 4px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: none;
+            position: relative;
+            z-index: 1000;
+            font-size: 14px;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .toggle-view {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .toggle-view button {
+            background: transparent;
+            color: #666;
+            border: 1px solid #d0d0d0;
+            width: auto;
+            padding: 8px 16px;
+        }
+
+        .toggle-view button:hover {
+            background: #f5f5f5;
+            color: #333;
+            border-color: #333;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .complexity-errors {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #c62828;
+        }
+
+        .complexity-errors ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <div class="container">
+            <h1>Vineyard</h1>
+            
+            <!-- Login Form -->
+            <div id="loginForm">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            <div class="toggle-view">
+                <button type="button" onclick="showRegister()">Need an account? Register</button>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerForm" class="hidden">
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" oninput="checkPasswordStrength(event)" required>
+                    <div id="passwordStrength" class="password-strength">
+                        <div id="strengthText"></div>
+                        <div id="strengthBar" class="strength-bar"></div>
+                        <div id="complexityErrors" class="complexity-errors"></div>
+                    </div>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+            <div class="toggle-view">
+                <button type="button" onclick="showLogin()">Already have an account? Login</button>
+            </div>
+        </div>
+
+        <!-- 2FA Verification -->
+        <div id="twoFactorForm" class="hidden">
+            <h2 style="margin-bottom: 10px;">Two-Factor Authentication</h2>
+            <p style="color: #666; text-align: center; margin-bottom: 30px;">Enter the 6-digit code from your authenticator app</p>
+            <form onsubmit="handle2FAVerification(event)">
+                <div class="form-group">
+                    <label for="twoFactorInput">Verification Code</label>
+                    <input type="text" id="twoFactorInput" placeholder="000000" maxlength="6" required autofocus>
+                </div>
+                <button type="submit">Verify</button>
+            </form>
+            <div class="toggle-view">
+                <button type="button" onclick="cancel2FA()">Back to Login</button>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        </div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Dashboard -->
+        <div id="dashboard" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h1 style="margin: 0;">Dashboard</h1>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="openSettings()" style="width: auto; padding: 8px 16px;">Settings</button>
+                    <button onclick="logout()" style="width: auto; padding: 8px 16px;">Logout</button>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="dashboard-block" style="background: #f5f5f5; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; min-height: 150px;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">Placeholder Title</h3>
+                    <p style="color: #666; margin: 0;">Placeholder content</p>
+                </div>
+                
+                <div class="dashboard-block" style="background: #f5f5f5; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; min-height: 150px;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">Placeholder Title</h3>
+                    <p style="color: #666; margin: 0;">Placeholder content</p>
+                </div>
+                
+                <div class="dashboard-block" style="background: #f5f5f5; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; min-height: 150px;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">Placeholder Title</h3>
+                    <p style="color: #666; margin: 0;">Placeholder content</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 30px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">Settings</h2>
+                <button onclick="closeSettings()" style="background: transparent; border: none; font-size: 24px; cursor: pointer; color: #666; padding: 0; width: 30px; height: 30px;">×</button>
+            </div>
+            
+            <div id="settingsContent">
+                <div style="margin-bottom: 20px;">
+                    <strong style="display: block; margin-bottom: 10px; color: #1a1a1a;">Account Information</strong>
+                    <p style="margin: 5px 0; color: #666;"><strong>Name:</strong> <span id="settingsName"></span></p>
+                    <p style="margin: 5px 0; color: #666;"><strong>Email:</strong> <span id="settingsEmail"></span></p>
+                    <p style="margin: 5px 0; color: #666;"><strong>2FA Enabled:</strong> <span id="settings2FA"></span></p>
+                    <p style="margin: 5px 0; color: #666;" id="settingsRole"></p>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <strong style="display: block; margin-bottom: 10px; color: #1a1a1a;">Security</strong>
+                    <div id="settingsActions"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
