@@ -1,6 +1,6 @@
 # Secure Application
 
-Enterprise-grade secure web application with comprehensive security features including authentication, 2FA, admin panel, and more.
+secure web application with comprehensive security features including authentication, 2FA, 
 
 ## Features
 
