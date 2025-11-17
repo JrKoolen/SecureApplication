@@ -154,24 +154,9 @@ docker-compose exec redis redis-cli
 - Two-factor authentication (TOTP)
 - Rate limiting on login attempts
 - Account locking after failed attempts
-- Geolocation-based suspicious login detection
+- Geolocation-based suspicious login detection X
 - Password complexity requirements
-- Password history tracking (prevents reuse)
+- Password history tracking (prevents reuse) X
 - Session management with Redis
-- Security headers via Helmet
-
-## License
-
-ISC
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## Support
-
-For issues and questions, please open an issue on GitHub.
+- Security headers via Helmet X
 
